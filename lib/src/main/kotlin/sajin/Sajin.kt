@@ -3,27 +3,27 @@
  */
 package sajin
 
+import java.util.Base64
+
 object Sajin {
-    /**
-     * Compares pixel by pixel, each pixel must be in a range of the
-     * standard deviation.
-     */
-    fun softCompare(x: String, y: String, std: Int): Float {
-        val a = 10.0f
-        val b = 1.0f
-
-        return a / b
-    }
-
     /**
      * Gets the average value of each pixel, and if the result is inside
      * the range given by the standard deviation then the pixel will be
      * considered as a matched pixel.
      */
-    fun midCompare(x: String, y: String, std: Int): Float {
+    fun softCompare(x: String, y: String, std: Int): Float {
         val a = 10.0f
         val b = 1.0f
+        return a / b
+    }
 
+    /**
+     * Compares pixel by pixel, each pixel must be in a range of the
+     * standard deviation.
+     */
+    fun midCompare(expected: String, actual: String, std: Int): Float {
+        val a = 10.0f
+        val b = 1.0f
         return a / b
     }
 
@@ -31,7 +31,18 @@ object Sajin {
      * Compares pixel by pixel, each pixel must be equal to be counted
      * as a matched pixel.
      */
-    fun hardCompare(x: String, y: String): Float {
-        return 0.1f
+    fun hardCompare(expected: String, actual: String): Float {
+        val expImg: ByteArray = Base64.getDecoder().decode(expected)
+        val actImg: ByteArray = Base64.getDecoder().decode(actual)
+        var matched = 0
+
+        for (i in expImg.indices) {
+            if (expImg[i] == actImg[i]) matched++
+        }
+
+        val precision = (matched.toFloat() / expImg.size.toFloat()) * 100
+        println("Precision of $precision%")
+
+        return precision
     }
 }
