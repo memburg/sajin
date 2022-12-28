@@ -4,7 +4,6 @@
 package sajin
 
 import java.awt.image.BufferedImage
-import java.awt.image.DataBufferByte
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.util.*
@@ -16,10 +15,36 @@ object Sajin {
      * the range given by the standard deviation then the pixel will be
      * considered as a matched pixel.
      */
-    fun softCompare(x: String, y: String, std: Int): Float {
-        val a = 10.0f
-        val b = 1.0f
-        return a / b
+    fun softCompare(expected: String, actual: String, std: Int): Float {
+        // Create buffered image for both images
+        val eb = createBufferedImage(expected)
+        val ab = createBufferedImage(actual)
+
+        beforeValidations(eb, ab)
+
+        var matched = 0
+
+        for (i in 0 until eb.height) {
+            for (j in 0 until eb.width) {
+                // Expected image pixel data
+                val ep: Int = eb.getRGB(j, i)
+                val epr = ep shr 16 and 0xff
+                val epg = ep shr 8 and 0xff
+                val epb = ep and 0xff
+                val eavg = (epr + epg + epb) / 3
+
+                // Actual image pixel data
+                val ap: Int = ab.getRGB(j, i)
+                val apr = ap shr 16 and 0xff
+                val apg = ap shr 8 and 0xff
+                val apb = ap and 0xff
+                val aavg = (apr + apg + apb) / 3
+
+                if (((eavg - std)..(eavg + std)).contains(aavg)) matched++
+            }
+        }
+
+        return matched.toFloat() / (eb.width * eb.height).toFloat() * 100
     }
 
     /**
@@ -27,9 +52,50 @@ object Sajin {
      * standard deviation.
      */
     fun midCompare(expected: String, actual: String, std: Int): Float {
-        val a = 10.0f
-        val b = 1.0f
-        return a / b
+        // Create buffered image for both images
+        val eb = createBufferedImage(expected)
+        val ab = createBufferedImage(actual)
+
+        beforeValidations(eb, ab)
+
+        var matched = 0
+
+        for (i in 0 until eb.height) {
+            for (j in 0 until eb.width) {
+                // Expected image pixel data
+                val ep: Int = eb.getRGB(j, i)
+                val epr = ep shr 16 and 0xff
+                val epg = ep shr 8 and 0xff
+                val epb = ep and 0xff
+
+                // Actual image pixel data
+                val ap: Int = ab.getRGB(j, i)
+                val apr = ap shr 16 and 0xff
+                val apg = ap shr 8 and 0xff
+                val apb = ap and 0xff
+
+                // Matching flags
+                var rm = false
+                var gm = false
+                var bm = false
+
+                if (((epr - std)..(epr + std)).contains(apr)) {
+                    rm = true
+                }
+
+                if (((epg - std)..(epg + std)).contains(apg)) {
+                    gm = true
+                }
+
+                if (((epb - std)..(epb + std)).contains(apb)) {
+                    bm = true
+                }
+
+                if (rm && gm && bm) matched++
+            }
+        }
+
+        return matched.toFloat() / (eb.width * eb.height).toFloat() * 100
     }
 
     /**
@@ -41,17 +107,9 @@ object Sajin {
         val eb = createBufferedImage(expected)
         val ab = createBufferedImage(actual)
 
-        // Validate widths are the same
-        if (eb.width != ab.width) {
-            throw Exception("No matching widths exception")
-        }
+        beforeValidations(eb, ab)
 
-        // Validate heights are the same
-        if (eb.height != ab.height) {
-            throw Exception("No matching heights exception")
-        }
-
-        var matched: Int = 0
+        var matched = 0
 
         for (i in 0 until eb.height) {
             for (j in 0 until eb.width) {
@@ -62,10 +120,7 @@ object Sajin {
             }
         }
 
-        val precision = matched.toFloat() / (eb.width * eb.height).toFloat() * 100
-        println("Precision of $precision%")
-
-        return precision
+        return matched.toFloat() / (eb.width * eb.height).toFloat() * 100
     }
     
     private fun createBufferedImage(im: String): BufferedImage {
@@ -79,7 +134,15 @@ object Sajin {
         }
     }
 
-    private fun getPixels(im: BufferedImage) {
+    private fun beforeValidations(eb: BufferedImage, ab: BufferedImage) {
+        // Validate widths are the same
+        if (eb.width != ab.width) {
+            throw Exception("No matching widths exception")
+        }
 
+        // Validate heights are the same
+        if (eb.height != ab.height) {
+            throw Exception("No matching heights exception")
+        }
     }
 }
