@@ -6,7 +6,7 @@ package sajin
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
 import java.io.IOException
-import java.util.*
+import java.util.Base64
 import javax.imageio.ImageIO
 
 object Sajin {
@@ -15,6 +15,7 @@ object Sajin {
      * the range given by the standard deviation then the pixel will be
      * considered as a matched pixel.
      */
+    @JvmStatic
     fun softCompare(expected: String, actual: String, std: Int): Float {
         // Create buffered image for both images
         val eb = createBufferedImage(expected)
@@ -51,6 +52,7 @@ object Sajin {
      * Compares pixel by pixel, each pixel must be in a range of the
      * standard deviation.
      */
+    @JvmStatic
     fun midCompare(expected: String, actual: String, std: Int): Float {
         // Create buffered image for both images
         val eb = createBufferedImage(expected)
@@ -102,6 +104,7 @@ object Sajin {
      * Compares pixel by pixel, each pixel must be equal to be counted
      * as a matched pixel.
      */
+    @JvmStatic
     fun hardCompare(expected: String, actual: String): Float {
         // Create buffered image for both images
         val eb = createBufferedImage(expected)

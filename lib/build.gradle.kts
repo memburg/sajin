@@ -7,7 +7,7 @@
  */
 
 group = "com.github"
-version = "1.0.2"
+version = "1.0.3"
 
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
