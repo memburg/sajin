@@ -3,7 +3,12 @@
  */
 package sajin
 
-import java.util.Base64
+import java.awt.image.BufferedImage
+import java.awt.image.DataBufferByte
+import java.io.ByteArrayInputStream
+import java.io.IOException
+import java.util.*
+import javax.imageio.ImageIO
 
 object Sajin {
     /**
@@ -32,17 +37,49 @@ object Sajin {
      * as a matched pixel.
      */
     fun hardCompare(expected: String, actual: String): Float {
-        val expImg: ByteArray = Base64.getDecoder().decode(expected)
-        val actImg: ByteArray = Base64.getDecoder().decode(actual)
-        var matched = 0
+        // Create buffered image for both images
+        val eb = createBufferedImage(expected)
+        val ab = createBufferedImage(actual)
 
-        for (i in expImg.indices) {
-            if (expImg[i] == actImg[i]) matched++
+        // Validate widths are the same
+        if (eb.width != ab.width) {
+            throw Exception("No matching widths exception")
         }
 
-        val precision = (matched.toFloat() / expImg.size.toFloat()) * 100
+        // Validate heights are the same
+        if (eb.height != ab.height) {
+            throw Exception("No matching heights exception")
+        }
+
+        var matched: Int = 0
+
+        for (i in 0 until eb.height) {
+            for (j in 0 until eb.width) {
+                val ep: Int = eb.getRGB(j, i)
+                val ap: Int = ab.getRGB(j, i)
+
+                if (ep == ap) matched++
+            }
+        }
+
+        val precision = matched.toFloat() / (eb.width * eb.height).toFloat() * 100
         println("Precision of $precision%")
 
         return precision
+    }
+    
+    private fun createBufferedImage(im: String): BufferedImage {
+        val imageData: ByteArray = Base64.getDecoder().decode(im)
+        val bais = ByteArrayInputStream(imageData)
+
+        try {
+            return ImageIO.read(bais)
+        } catch (e: IOException) {
+            throw RuntimeException(e)
+        }
+    }
+
+    private fun getPixels(im: BufferedImage) {
+
     }
 }
