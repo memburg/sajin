@@ -10,8 +10,8 @@ Sajin is an easy to use library (specially designed for Selenium) aimed at compa
 
 ```java
 // Get your screenshots as a string (BASE64)
-String expected = ((TakeScreenshot) driver).getScreenshotAs(OutputType.BASE64);
-String actual = ((TakeScreenshot) driver).getScreenshotAs(OutputType.BASE64);
+String expected = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BASE64);
+String actual = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BASE64);
 
 // Make the comparison!
 double similarity = Sajin.hardCompare(expected, actual);
