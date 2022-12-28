@@ -14,10 +14,19 @@ String expected = ((TakeScreenshot) driver).getScreenshotAs(OutputType.BASE64);
 String actual = ((TakeScreenshot) driver).getScreenshotAs(OutputType.BASE64);
 
 // Make the comparison!
-double similarity = hardCompare(expected, actual);
+double similarity = Sajin.hardCompare(expected, actual);
 
 // Print the results
 System.out.println("Similarity is " + similarity + "%");
+```
+
+## Important
+
+In version 1.0.2 it is necessary to use Sajin like the following example:
+
+```java
+// Preferably use version 1.0.3
+double similarity = Sajin.INSTANCE.hardCompare(expected, actual);
 ```
 
 ## Contributions
