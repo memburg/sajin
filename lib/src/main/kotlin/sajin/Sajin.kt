@@ -144,7 +144,8 @@ object Sajin {
                 val ap: Int = ab.getRGB(j, i)
 
                 if (ep != ap) {
-                    val newPixel = (r shl 16) or (g shl 8) or b
+                    // don't allow transparency
+                    val newPixel = (255 shl 24) or (r shl 16) or (g shl 8) or b
                     eb.setRGB(j, i, newPixel)
                 }
             }
