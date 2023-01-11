@@ -5,6 +5,7 @@ package sajin
 
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.Base64
 import javax.imageio.ImageIO
@@ -124,6 +125,40 @@ object Sajin {
         }
 
         return matched.toFloat() / (eb.width * eb.height).toFloat() * 100
+    }
+
+    /**
+     * Returns an empty string in case there's a failure
+     */
+    @JvmStatic
+    fun detectMovement(im1: String, im2: String, r: Int, g: Int, b: Int): String {
+        val eb = createBufferedImage(im1)
+        val ab = createBufferedImage(im2)
+        var difference = ""
+
+        beforeValidations(eb, ab)
+
+        for (i in 0 until eb.height) {
+            for (j in 0 until eb.width) {
+                val ep: Int = eb.getRGB(j, i)
+                val ap: Int = ab.getRGB(j, i)
+
+                if (ep != ap) {
+                    val newPixel = (r shl 16) or (g shl 8) or b
+                    eb.setRGB(j, i, newPixel)
+                }
+            }
+        }
+
+        try {
+            val out = ByteArrayOutputStream(8192)
+            ImageIO.write(eb, "png", out)
+            difference = Base64.getEncoder().encodeToString(out.toByteArray())
+        } catch (e: IOException) {
+            throw Exception("Image processing exception")
+        }
+
+        return difference
     }
     
     private fun createBufferedImage(im: String): BufferedImage {
