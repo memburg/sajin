@@ -3,6 +3,8 @@
 ![](./sajin.png)
 
 [![](https://jitpack.io/v/memburg/sajin.svg)](https://jitpack.io/#memburg/sajin)
+![Weekly download statistics](https://jitpack.io/v/memburg/sajin/week.svg)
+![Monthly download statistics](https://jitpack.io/v/memburg/sajin/month.svg)
 
 Sajin is an easy to use library (specially designed for Selenium) aimed at comparing images and their similarity (as a double data type; representing percentage).
 
