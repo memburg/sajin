@@ -2,7 +2,7 @@
 
 ![](./sajin.png)
 
-[![](https://jitpack.io/v/memburg/sajin.svg)](https://jitpack.io/#memburg/sajin)
+[![Release](https://jitpack.io/v/memburg/sajin.svg)](https://jitpack.io/#memburg/sajin)
 ![Weekly download statistics](https://jitpack.io/v/memburg/sajin/week.svg)
 ![Monthly download statistics](https://jitpack.io/v/memburg/sajin/month.svg)
 
